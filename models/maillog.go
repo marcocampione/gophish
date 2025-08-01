@@ -40,6 +40,7 @@ type MailLog struct {
 	SendDate    time.Time `json:"send_date"`
 	SendAttempt int       `json:"send_attempt"`
 	Processing  bool      `json:"-"`
+	MessageId   string    `json:"-" gorm:"-"` // Store the generated message ID (not persisted to DB)
 
 	cachedCampaign *Campaign
 }
@@ -127,6 +128,14 @@ func (m *MailLog) Success() error {
 	if err != nil {
 		return err
 	}
+	// Save the message ID to the result before deleting the maillog
+	if m.MessageId != "" {
+		r.MessageId = m.MessageId
+		err = db.Save(r).Error
+		if err != nil {
+			return err
+		}
+	}
 	err = db.Delete(m).Error
 	return err
 }
@@ -208,6 +217,8 @@ func (m *MailLog) Generate(msg *gomail.Message) error {
 		return err
 	}
 	msg.SetHeader("Message-Id", messageID)
+	// Store the message ID for later use
+	m.MessageId = messageID
 
 	// Parse the customHeader templates
 	for _, header := range c.SMTP.Headers {
