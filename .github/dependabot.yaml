@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    # Prioritize security updates
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      nonmajor:
+        applies-to: version-updates
+        update-types: ["minor", "patch"]
+    # Auto-assign for review
+    reviewers:
+      - "marcocampione"
+    assignees:
+      - "marcocampione"
