@@ -28,6 +28,7 @@ type Result struct {
 	CampaignId   int64     `json:"-"`
 	UserId       int64     `json:"-"`
 	RId          string    `json:"id"`
+	Subject      string    `json:"subject"`
 	Status       string    `json:"status" sql:"not null"`
 	IP           string    `json:"ip"`
 	Latitude     float64   `json:"latitude"`

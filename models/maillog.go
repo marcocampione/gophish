@@ -37,6 +37,7 @@ type MailLog struct {
 	UserId      int64     `json:"-"`
 	CampaignId  int64     `json:"campaign_id"`
 	RId         string    `json:"id"`
+	Subject     string    `json:"-" gorm:"-"` // Store the generated subject (not persisted to DB)
 	SendDate    time.Time `json:"send_date"`
 	SendAttempt int       `json:"send_attempt"`
 	Processing  bool      `json:"-"`
@@ -128,9 +129,17 @@ func (m *MailLog) Success() error {
 	if err != nil {
 		return err
 	}
-	// Save the message ID to the result before deleting the maillog
+	// Save the message ID and subject to the result before deleting the maillog
+	updated := false
 	if m.MessageId != "" {
 		r.MessageId = m.MessageId
+		updated = true
+	}
+	if m.Subject != "" {
+		r.Subject = m.Subject
+		updated = true
+	}
+	if updated {
 		err = db.Save(r).Error
 		if err != nil {
 			return err
@@ -242,6 +251,8 @@ func (m *MailLog) Generate(msg *gomail.Message) error {
 	if err != nil {
 		log.Warn(err)
 	}
+	// Store the subject for later use
+	m.Subject = subject
 	// don't set Subject header if the subject is empty
 	if subject != "" {
 		msg.SetHeader("Subject", subject)
