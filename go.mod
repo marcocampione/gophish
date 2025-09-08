@@ -1,6 +1,6 @@
 module github.com/gophish/gophish
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.24.4
 
@@ -25,7 +25,7 @@ require (
 	github.com/oschwald/maxminddb-golang v1.13.1
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/crypto v0.41.0
-	golang.org/x/time v0.12.0
+	golang.org/x/time v0.13.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
 )
